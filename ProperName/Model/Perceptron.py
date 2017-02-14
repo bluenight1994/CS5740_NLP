@@ -11,22 +11,24 @@
 
 
 import numpy as np
+from scipy.sparse import hstack
 
 class Perceptron(object):
 
-	def __init__(self, eta = 0.01, epochs = 50, n_class = 2):
+	def __init__(self, eta = 0.01, epochs = 50, n_class = 2, dim = 0):
 		self.eta = eta
 		self.epochs = epochs
 		self.n_class = n_class
-
+		self.W = [np.zeros(1+dim) for _ in xrange(self.n_class)]
 
 	def train(self, X, Y):
-		self.X = np.append(np.ones((X.shape[0],1)), X, axis = 1)
-		self.W = [np.zeros(1 + X.shape[1]) for _ in xrange(self.n_class)]
-
-		for _ in range(self.epochs):
+		self.X = np.append(np.ones((self.X.shape[0],1)), self.X, axis = 1)
+		self.Y = Y
+		seq = np.arange(self.X.shape[0])
+		np.random.shuffle(seq)
+        for _ in range(self.epochs):
 			converged = True
-			for xi, yi in zip(self.X, Y):
+			for xi, yi in zip(self.X[seq], self.Y[seq]):
 				vec = np.zeros(self.n_class)
 				for i in range(self.n_class):
 					vec[i] = np.dot(xi, self.W[i])
